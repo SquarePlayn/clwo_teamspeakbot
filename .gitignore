@@ -69,3 +69,6 @@ fabric.properties
 
 # The password configuration file
 conf/passwords.json
+
+# Leftover .idea, just ignore it all
+.idea/
