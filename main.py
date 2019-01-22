@@ -1,24 +1,37 @@
-import ts3, json
+import ts3
 
-settings = dict()
-with open('conf/passwords.json') as passwordsfile:
-    settings.update(json.load(passwordsfile))
+from channel import Channel
+from client import Client
+from settings import Settings
 
-with ts3.query.TS3Connection(settings["teamspeak"]["host"]) as ts3conn:
-    # Note, that the client will wait for the response and raise a
-    # **TS3QueryError** if the error id of the response is not 0.
+Settings.load_settings({"passwords", "modules", "general"})
+settings = Settings.settings
+
+
+# Main execution: Core of the program. What's called at the start
+def main():
+    with ts3.query.TS3Connection(settings["teamspeak"]["host"]) as ts:
+        teamspeak_login(ts)
+        Client.init(ts)
+        Channel.init(ts)
+
+        # Execute all the activated modules
+        for module_name in settings["active_modules"]:
+            module = __import__("modules." + module_name, fromlist=["modules"])
+            module.execute()
+
+
+# Log into the teamspeak query
+def teamspeak_login(ts):
     try:
-        ts3conn.login(
+        ts.login(
             client_login_name=settings["teamspeak"]["username"],
             client_login_password=settings["teamspeak"]["password"]
         )
     except ts3.query.TS3QueryError as err:
         print("Login failed:", err.resp.error["msg"])
         exit(1)
+    ts.use(sid=1)
 
-    ts3conn.use(sid=1)
 
-    # Each query method will return a **TS3QueryResponse** instance,
-    # with the response.
-    resp = ts3conn.clientlist()
-    print("Clients on the server:", resp.parsed)
+main()
