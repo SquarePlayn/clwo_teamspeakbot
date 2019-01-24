@@ -9,7 +9,7 @@ class Channel:
     # Called when creating a new instance. Builds all instance's variables
     def __init__(self, cid, ts):
         self.cid = cid
-        #self.tsinfo = ts.channelinfo(cid=cid)[0]
+        self.tsinfo = ts.channelinfo(cid=cid)[0]
 
     # Executes a corresponding function on all subscribed modules
     def action_executed(self, action, ts, db):
