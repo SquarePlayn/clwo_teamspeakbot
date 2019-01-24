@@ -12,12 +12,12 @@ required_modules = {}
 
 
 # A module may have an init function, which will be called before any of the other functions
-def init():
+def init(ts, db):
     print("Initialization is being run now")
 
 
 # A module may have an execute funcion, which will be called once
-def execute():
+def execute(ts, db):
     print("The example module is being executed")
 
     clients = Client.clients
