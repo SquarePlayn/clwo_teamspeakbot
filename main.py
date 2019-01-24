@@ -10,6 +10,7 @@ Settings.load_settings({"passwords", "modules", "general"})
 settings = Settings.settings
 Settings.load_modules(settings["active_modules"])
 loaded_modules = Settings.loaded_modules
+modules_ordered = list()
 
 # These sets keep track of for which modules a certain action has already been performed
 initialized_modules = set()
@@ -24,13 +25,11 @@ def main():
         Client.init(ts)
         Channel.init(ts)
 
-        # Initialize all the loaded modules
-        for module_name in loaded_modules:
-            initialize_module(module_name, ts, db)
+        # Find an appropriate topological module order
+        order_modules(loaded_modules)
 
-        # Execute all the loaded modules
-        for module_name in loaded_modules:
-            execute_module(module_name, ts, db)
+        execute_modules_function("init", ts, db)
+        execute_modules_function("execute", ts, db)
 
 
 # Log into the teamspeak query
@@ -65,30 +64,26 @@ def database_login():
     return db
 
 
-# Initializes a module. If the module has other required modules, those are initialized first
-def initialize_module(module_name, ts, db):
-    if module_name not in initialized_modules:
-        module = loaded_modules[module_name]
-        if hasattr(module, "required_modules"):
-            for required_module_name in module.required_modules:
-                if required_module_name not in initialized_modules:
-                    initialize_module(required_module_name, db, ts)
-        if hasattr(module, "init"):
-            module.init(ts, db)
-        initialized_modules.add(module_name)
+# Adds the given modules to the modules_ordered list such that for each module, its required modules are before it
+def order_modules(module_names):
+    for module_name in module_names:
+        if module_name not in modules_ordered:
+            module = loaded_modules[module_name]
+            if hasattr(module, "required_modules"):
+                order_modules(module.required_modules)
+            modules_ordered.append(module_name)
 
 
-# Executes a module. If the module has other required modules, those are executed first
-def execute_module(module_name, ts, db):
-    if module_name not in executed_modules:
+# Executes one function on all loaded modules in specified order
+def execute_modules_function(function_name, ts, db, reverse=False):
+    order = modules_ordered
+    if reverse:
+        order = reversed(order)
+    for module_name in order:
         module = loaded_modules[module_name]
-        if hasattr(module, "required_modules"):
-            for required_module_name in module.required_modules:
-                if required_module_name not in executed_modules:
-                    execute_module(required_module_name, db, ts)
-        if hasattr(module, "execute"):
-            module.execute(ts, db)
-        executed_modules.add(module_name)
+        if hasattr(module, function_name):
+            function = getattr(module, function_name)
+            function(ts, db)
 
 
 # Function called at the end of all executions
