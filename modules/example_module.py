@@ -58,3 +58,28 @@ def on_channel_exampleaction(channel, ts, db):
 def finalize(ts, db):
     print("- The example module is being finalized:")
     # For example here you can close any database connection you opened
+
+
+"""
+    Running this example module, gives an output of the likes of:
+    
+    - Initialization of the example module is being run now:
+    - The example module is being executed:
+    There are 3 clients online:
+      15
+      47
+      9
+    There are 7 channels:
+      1
+      5
+      18
+      6
+      7
+      8
+      15
+    We are going to run the example action on the client with cldbid 1495
+    Our example action was executed on the CLIENT with cldbid 1495.
+    We are going to run the example action on the channel with cid 1
+    Our example action was executed on the CHANNEL with cid 1.
+    - The example module is being finalized:
+"""
