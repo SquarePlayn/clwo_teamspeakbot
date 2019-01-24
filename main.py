@@ -30,6 +30,7 @@ def main():
 
         execute_modules_function("init", ts, db)
         execute_modules_function("execute", ts, db)
+        execute_modules_function("finalize", ts, db)
 
 
 # Log into the teamspeak query
