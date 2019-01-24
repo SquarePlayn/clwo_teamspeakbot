@@ -2,8 +2,13 @@ from channel import Channel
 from client import Client
 from settings import Settings
 
-Settings.load_settings({"general"})
+# In this set you can specify which json settings files should be loaded for this module
+required_settings = {"general"}
 settings = Settings.settings
+
+# In this set you can specify which modules are required to be loaded for this module
+# They are guaranteed to be ran before this module is ran (be it executed, initialized or other action)
+required_modules = {}
 
 
 def execute():
