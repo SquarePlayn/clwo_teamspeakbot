@@ -11,6 +11,12 @@ settings = Settings.settings
 required_modules = {}
 
 
+# A module may have an init function, which will be called before any of the other functions
+def init():
+    print("Initialization is being run now")
+
+
+# A module may have an execute funcion, which will be called once
 def execute():
     print("The example module is being executed")
 

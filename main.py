@@ -41,7 +41,8 @@ def teamspeak_login(ts):
     except ts3.query.TS3QueryError as err:
         print("Login failed:", err.resp.error["msg"])
         exit(1)
-    ts.use(sid=1)
+    ts.use(sid=settings["teamspeak"]["sid"])
+    ts.clientupdate(client_nickname=settings["general"]["bot_name"])
 
 
 # Initializes a module. If the module has other required modules, those are initialized first
@@ -52,7 +53,8 @@ def initialize_module(module_name):
             for required_module_name in module.required_modules:
                 if required_module_name not in initialized_modules:
                     initialize_module(required_module_name)
-        module.init()
+        if hasattr(module, "init"):
+            module.init()
         initialized_modules.add(module_name)
 
 
@@ -64,7 +66,8 @@ def execute_module(module_name):
             for required_module_name in module.required_modules:
                 if required_module_name not in executed_modules:
                     execute_module(required_module_name)
-        module.execute()
+        if hasattr(module, "execute"):
+            module.execute()
         executed_modules.add(module_name)
 
 

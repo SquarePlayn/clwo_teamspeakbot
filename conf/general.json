@@ -1,3 +1,5 @@
 {
-  "todo": "add settings"
+  "general": {
+    "bot_name": "CLWO Bot"
+  }
 }
