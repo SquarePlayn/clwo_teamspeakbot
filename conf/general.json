@@ -1,5 +1,6 @@
 {
   "general": {
+    "debug": false,
     "bot_name": "CLWO Bot"
   }
 }
