@@ -2,6 +2,12 @@ import inspect
 
 
 # Stores all information about clients
+from settings import Settings
+from utility import set_type
+
+Settings.load_settings({"client_variables"})
+
+
 class Client:
     clients = dict()
     online_clients = set()
@@ -13,7 +19,7 @@ class Client:
         self.online = online
         if online:
             self.clid = clid
-            self.tsinfo = ts.clientinfo(clid=clid)[0]
+            self.load_info(ts)
 
     # Executes a corresponding function on all subscribed modules
     def action_executed(self, action, ts, db):
@@ -21,6 +27,14 @@ class Client:
             for module in Client.subscriptions[action]:
                 function = getattr(module, "on_client_"+action)
                 function(self, ts, db)
+
+    # Query and save all default channel variables
+    def load_info(self, ts):
+        tsinfo = ts.clientinfo(clid=self.clid)[0]
+        client_variables = Settings.settings["client_variables"]
+        for var_name in client_variables:
+            var_type = client_variables[var_name]
+            setattr(self, var_name, set_type(tsinfo[var_name], var_type))
 
     # Called initially. Builds the main structure
     @staticmethod

@@ -1,0 +1,31 @@
+{
+  "channel_variables": {
+    "pid": "int",
+    "channel_name": "str",
+    "channel_topic": "str",
+    "channel_description": "str",
+    "channel_password": "str",
+    "channel_codec": "int",
+    "channel_codec_quality": "int",
+    "channel_maxclients": "int",
+    "channel_maxfamilyclients": "int",
+    "channel_order": "int",
+    "channel_flag_permanent": "int",
+    "channel_flag_semi_permanent": "int",
+    "channel_flag_default": "int",
+    "channel_flag_password": "int",
+    "channel_codec_latency_factor": "int",
+    "channel_codec_is_unencrypted": "int",
+    "channel_security_salt": "str",
+    "channel_delete_delay": "int",
+    "channel_flag_maxclients_unlimited": "int",
+    "channel_flag_maxfamilyclients_unlimited": "int",
+    "channel_flag_maxfamilyclients_inherited": "int",
+    "channel_filepath": "str",
+    "channel_needed_talk_power": "int",
+    "channel_forced_silence": "int",
+    "channel_name_phonetic": "str",
+    "channel_icon_id": "int",
+    "seconds_empty": "int"
+  }
+}
