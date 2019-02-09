@@ -74,7 +74,7 @@ def database_login():
         db=settings["db"]["database"]
     )
     dbconn.autocommit(True)
-    db = dbconn.cursor()
+    db = dbconn.cursor(MySQLdb.cursors.DictCursor)
     return db
 
 

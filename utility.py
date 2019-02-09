@@ -1,6 +1,5 @@
 # Includes functions that can be used by all modules for any purpose
 import json
-
 import MySQLdb
 import requests
 
@@ -89,5 +88,5 @@ def set_type(var, var_type, type_2="str"):
 
 
 # Escapes a string so it is safe to use in a query
-def escape_string(string):
-    return MySQLdb.escape_string(string)
+def escape_string(value):
+    return MySQLdb.escape_string(value).decode()
