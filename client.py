@@ -15,6 +15,7 @@ class Client:
 
     # Called when creating a new instance. Builds all instance's variables
     def __init__(self, ts, cldbid, online, clid=0):
+        self.servergroups = set()
         self.cldbid = cldbid
         self.online = online
         if online:
@@ -30,11 +31,17 @@ class Client:
 
     # Query and save all default channel variables
     def load_info(self, ts):
+        # General client info
         tsinfo = ts.clientinfo(clid=self.clid)[0]
         client_variables = Settings.settings["client_variables"]
         for var_name in client_variables:
             var_type = client_variables[var_name]
             setattr(self, var_name, set_type(tsinfo[var_name], var_type))
+
+        # Group data (only the group ids are stored)
+        servergroups_data = ts.servergroupsbyclientid(cldbid=self.cldbid)
+        for servergroup in servergroups_data:
+            self.servergroups.add(int(servergroup["sgid"]))
 
     # Called initially. Builds the main structure
     @staticmethod
