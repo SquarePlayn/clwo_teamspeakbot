@@ -25,5 +25,10 @@ class Settings:
         for required_setting in required_settings:
             if required_setting not in Settings.loaded_settings:
                 with open("conf/" + required_setting + ".json") as settings_file:
-                    Settings.settings.update(json.load(settings_file))
+                    data = json.load(settings_file)
+                    for key in data:
+                        if key in Settings.settings and (type(data[key]) == dict or type(data[key]) == list):
+                            Settings.settings[key].update(data[key])
+                        else:
+                            Settings.settings[key] = data[key]
                     Settings.loaded_settings.add(required_setting)
