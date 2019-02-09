@@ -1,0 +1,15 @@
+{
+  "steam_verification": {
+    "table_name": "steam_verification",
+    "cldbid_db_field_name": "cldbid",
+    "steamid64_db_field_name": "steamid64",
+    "verification_code_db_field_name": "verification_code",
+    "verificatoin_date_db_field_name": "verificatoin_date",
+    "cldbid_web_field_name": "cldbid",
+    "verification_code_web_field_name": "code",
+    "base_link": "https://tsverify.squareplayn.com",
+    "message": "Welcome to the CLWO TeamSpeak3 server! To get verified, please login with Steam [url={link}]here[/url]!",
+    "code_length": 23,
+    "verified_group_id": 9
+  }
+}
