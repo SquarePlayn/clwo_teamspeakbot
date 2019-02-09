@@ -1,5 +1,7 @@
 # Includes functions that can be used by all modules for any purpose
 import json
+
+import MySQLdb
 import requests
 
 from settings import Settings
@@ -84,3 +86,8 @@ def set_type(var, var_type, type_2="str"):
         return dct
     else:
         debug("Attempted to set type to unknown type " + str(var_type))
+
+
+# Escapes a string so it is safe to use in a query
+def escape_string(string):
+    return MySQLdb.escape_string(string)
