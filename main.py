@@ -6,6 +6,8 @@ from client import Client
 from settings import Settings
 
 # Load the main settings and all the modules
+from utility import debug
+
 Settings.load_settings({"passwords", "modules", "general"})
 settings = Settings.settings
 Settings.load_modules(settings["active_modules"])
@@ -20,10 +22,29 @@ executed_modules = set()
 # Main execution: Core of the program. What's called at the start
 def main():
     with ts3.query.TS3Connection(settings["teamspeak"]["host"]) as ts:
-        teamspeak_login(ts)
-        db = database_login()
-        Client.init(ts)
-        Channel.init(ts)
+        try:
+            teamspeak_login(ts)
+        except:
+            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> TeamSpeak login failed", urgency=20)
+            return
+
+        try:
+            db = database_login()
+        except:
+            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Database login failed", urgency=20)
+            return
+
+        try:
+            Client.init(ts)
+        except:
+            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Client initialization failed", urgency=20)
+            return
+
+        try:
+            Channel.init(ts)
+        except:
+            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Channel initialization failed", urgency=20)
+            return
 
         # Find an appropriate topological module order
         order_modules(loaded_modules)
@@ -75,7 +96,7 @@ def order_modules(module_names):
             modules_ordered.append(module_name)
 
 
-# Executes one function on all loaded modules in specified order
+# Executes one function on all loaded modules in specified order (if it has that function)
 def execute_modules_function(function_name, ts, db, reverse=False):
     order = modules_ordered
     if reverse:
@@ -84,7 +105,10 @@ def execute_modules_function(function_name, ts, db, reverse=False):
         module = loaded_modules[module_name]
         if hasattr(module, function_name):
             function = getattr(module, function_name)
-            function(ts, db)
+            try:
+                function(ts, db)
+            except:
+                debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> An exception occurred during execution of `" + function_name + "` on module `" + module_name + "`!", urgency=20)
 
 
 # Function called at the end of all executions

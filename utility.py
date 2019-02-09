@@ -28,7 +28,8 @@ def send_to_slack(message):
         'text': message,
         'channel': channel,
         'username': bot_name,
-        'icon_emoji': icon_emoji
+        'icon_emoji': icon_emoji,
+        'link_names': 1
     }
     response = requests.post(url, data=json.dumps(data), headers={'Content-Type': 'application/json'})
     if response.status_code != 200:
