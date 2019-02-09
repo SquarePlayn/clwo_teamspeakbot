@@ -8,22 +8,33 @@ Settings.load_settings({"general", "slack"})
 
 
 # Prints a debug message when it is urgent or when debugging is on
-def debug(message, urgency=0):
+def debug(message, message_2="", urgency=0, fatal=False, error=None):
     if urgency > 0 or Settings.settings["general"]["debug"]:
         print(message)
     slack_urgency = Settings.settings["general"]["slack_error_reporting_min_urgency"]
     if 0 <= slack_urgency <= urgency:
-        send_to_slack(message)
+        send_to_slack(message, message_2, inform_dev=True)
+
+    if fatal:
+        raise error
 
 
 # Send a message to Slack
-def send_to_slack(message):
-    print("Sending Slack message "+message)
-
+def send_to_slack(message, message_2="", inform_dev=False):
     url = Settings.settings["slack"]["hook"]
     channel = Settings.settings["slack"]["channel"]
     bot_name = Settings.settings["slack"]["bot_name"]
     icon_emoji = Settings.settings["slack"]["icon_emoji"]
+
+    if inform_dev:
+        dev_id = Settings.settings["slack"]["dev_member_id"]
+        message = "<@" + str(dev_id) + "> " + message
+
+    if message_2 != "":
+        message = message + "\n>>>" + message_2
+    else:
+        message = ">" + message
+
     data = {
         'text': message,
         'channel': channel,

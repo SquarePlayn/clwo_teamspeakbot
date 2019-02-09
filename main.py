@@ -1,3 +1,4 @@
+import traceback
 import ts3
 import MySQLdb
 
@@ -24,27 +25,23 @@ def main():
     with ts3.query.TS3Connection(settings["teamspeak"]["host"]) as ts:
         try:
             teamspeak_login(ts)
-        except:
-            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> TeamSpeak login failed", urgency=20)
-            return
+        except Exception as e:
+            debug("TeamSpeak login failed:", repr(e), urgency=20, fatal=True, error=e)
 
         try:
             db = database_login()
-        except:
-            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Database login failed", urgency=20)
-            return
+        except Exception as e:
+            debug("Database login failed:", repr(e), urgency=20, fatal=True, error=e)
 
         try:
             Client.init(ts)
-        except:
-            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Client initialization failed", urgency=20)
-            return
+        except Exception as e:
+            debug("Client initialization failed:", repr(e), urgency=20, fatal=True, error=e)
 
         try:
             Channel.init(ts)
-        except:
-            debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> Channel initialization failed", urgency=20)
-            return
+        except Exception as e:
+            debug("Channel initialization failed:", repr(e), urgency=20, fatal=True, error=e)
 
         # Find an appropriate topological module order
         order_modules(loaded_modules)
@@ -62,7 +59,7 @@ def teamspeak_login(ts):
             client_login_password=settings["teamspeak"]["password"]
         )
     except ts3.query.TS3QueryError as err:
-        print("Login failed:", err.resp.error["msg"])
+        debug("TeamSpeak login failed:", repr(err.resp.error["msg"]), urgency=20, fatal=True, error=e)
         exit(1)
     ts.use(sid=settings["teamspeak"]["sid"])
     ts.clientupdate(client_nickname=settings["general"]["bot_name"])
@@ -70,17 +67,12 @@ def teamspeak_login(ts):
 
 # Log into the database
 def database_login():
-    try:
-        dbconn = MySQLdb.connect(
-            host=settings["db"]["host"],
-            user=settings["db"]["username"],
-            passwd=settings["db"]["password"],
-            db=settings["db"]["database"]
-        )
-    except:
-        print("Error connecting to MySQL Database")
-        exit(1)
-        return
+    dbconn = MySQLdb.connect(
+        host=settings["db"]["host"],
+        user=settings["db"]["username"],
+        passwd=settings["db"]["password"],
+        db=settings["db"]["database"]
+    )
     dbconn.autocommit(True)
     db = dbconn.cursor()
     return db
@@ -107,8 +99,8 @@ def execute_modules_function(function_name, ts, db, reverse=False):
             function = getattr(module, function_name)
             try:
                 function(ts, db)
-            except:
-                debug("><@" + Settings.settings["slack"]["dev_member_id"] + "> An exception occurred during execution of `" + function_name + "` on module `" + module_name + "`!", urgency=20)
+            except Exception as e:
+                debug("An exception occurred during execution of `" + function_name + "` on module `" + module_name + "`:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
 
 # Function called at the end of all executions
