@@ -1,0 +1,7 @@
+{
+  "slack": {
+    "channel": "#ts3_dev",
+    "bot_name": "TS3 Reporter",
+    "icon_emoji": ":dancing_penguin:"
+  }
+}

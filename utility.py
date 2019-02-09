@@ -1,16 +1,41 @@
 # Includes functions that can be used by all modules for any purpose
+import json
+import requests
+
 from settings import Settings
 
-Settings.load_settings({"general"})
+Settings.load_settings({"general", "slack"})
 
 
 # Prints a debug message when it is urgent or when debugging is on
 def debug(message, urgency=0):
-    if urgency > 0:
+    if urgency > 0 or Settings.settings["general"]["debug"]:
         print(message)
-        return
-    if Settings.settings["general"]["debug"]:
-        print(message)
+    slack_urgency = Settings.settings["general"]["slack_error_reporting_min_urgency"]
+    if 0 <= slack_urgency <= urgency:
+        send_to_slack(message)
+
+
+# Send a message to Slack
+def send_to_slack(message):
+    print("Sending Slack message "+message)
+
+    url = Settings.settings["slack"]["hook"]
+    channel = Settings.settings["slack"]["channel"]
+    bot_name = Settings.settings["slack"]["bot_name"]
+    icon_emoji = Settings.settings["slack"]["icon_emoji"]
+    data = {
+        'text': message,
+        'channel': channel,
+        'username': bot_name,
+        'icon_emoji': icon_emoji
+    }
+    response = requests.post(url, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+    if response.status_code != 200:
+        raise ValueError(
+            'Request to slack returned an error %s, the response is:\n%s'
+            % (response.status_code, response.text)
+        )
 
 
 # Casts a variable to a given type.

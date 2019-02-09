@@ -1,6 +1,7 @@
 {
   "general": {
     "debug": false,
+    "slack_error_reporting_min_urgency": 10,
     "bot_name": "CLWO Bot"
   }
 }
