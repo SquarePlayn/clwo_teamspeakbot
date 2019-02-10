@@ -1,4 +1,5 @@
 import json
+import os
 
 
 # Takes care of loading the settings and modules
@@ -22,9 +23,10 @@ class Settings:
     # Loads the given settings json files into the settings dictionary
     @staticmethod
     def load_settings(required_settings):
+        path = os.path.dirname(os.path.realpath(__file__))
         for required_setting in required_settings:
             if required_setting not in Settings.loaded_settings:
-                with open("conf/" + required_setting + ".json") as settings_file:
+                with open(path+"/conf/" + required_setting + ".json") as settings_file:
                     data = json.load(settings_file)
                     for key in data:
                         if key in Settings.settings and (type(data[key]) == dict or type(data[key]) == list):
