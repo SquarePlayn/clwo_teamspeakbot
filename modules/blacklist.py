@@ -37,14 +37,16 @@ def init(ts, db):
 def execute(ts, db):
     bl_group_id = Settings.settings["blacklist"]["blacklisted_group_id"]
     for client in Client.clients.values():
-        if client.blacklisted and bl_group_id not in client.servergroups:
+        if (client.is_verified and client.blacklisted) and bl_group_id not in client.servergroups:
             # Blacklisted person without blacklist server rank. Give them the server rank
             ts.servergroupaddclient(sgid=bl_group_id, cldbid=client.cldbid)
+            client.servergroups.add(bl_group_id)
             client.action_executed("blacklisted_rank_changed", ts, db)
             client.action_executed("blacklisted_rank_added", ts, db)
 
-        if not client.blacklisted and bl_group_id in client.servergroups:
+        if (not client.is_verified or not client.blacklisted) and bl_group_id in client.servergroups:
             # Not blacklisted but does have blacklist server rank. Take the rank away
             ts.servergroupdelclient(sgid=bl_group_id, cldbid=client.cldbid)
+            client.servergroups.remove(bl_group_id)
             client.action_executed("blacklisted_rank_changed", ts, db)
             client.action_executed("blacklisted_rank_removed", ts, db)
