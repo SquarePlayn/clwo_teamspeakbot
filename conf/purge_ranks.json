@@ -4,7 +4,7 @@
     "whitelist_enabled": true,
     "blacklist_enabled": false,
     "servergroups_whitelist": [9, 8, 6, 25],
-    "channelgroups_whitelist": [7, 6],
+    "channelgroups_whitelist": [7, 8],
     "servergroups_blacklist": [ ],
     "channelgroups_blacklist": [ ]
   }
