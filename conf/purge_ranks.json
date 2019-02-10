@@ -1,0 +1,11 @@
+{
+  "purge_ranks": {
+    "default_channel_rank": 8,
+    "whitelist_enabled": true,
+    "blacklist_enabled": false,
+    "servergroups_whitelist": [9, 8, 6, 25],
+    "channelgroups_whitelist": [7, 6],
+    "servergroups_blacklist": [ ],
+    "channelgroups_blacklist": [ ]
+  }
+}
