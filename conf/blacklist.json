@@ -1,0 +1,6 @@
+{
+  "blacklist": {
+    "api": "https://clwo.eu/jailbreak/api/v2/blacklist.php?cSteamID64={steamid64}",
+    "blacklisted_group_id": 25
+  }
+}
