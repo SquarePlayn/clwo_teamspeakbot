@@ -3,7 +3,6 @@ import json
 import MySQLdb
 import requests
 
-import settings
 from settings import Settings
 
 Settings.load_settings({"general", "slack"})

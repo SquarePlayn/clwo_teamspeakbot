@@ -1,13 +1,12 @@
 import inspect
 
-
-# Stores all information about clients
 from settings import Settings
 from utility import set_type
 
 Settings.load_settings({"client_variables"})
 
 
+# Stores all information about clients
 class Client:
     clients = dict()
     online_clients = set()

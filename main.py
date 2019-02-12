@@ -5,10 +5,10 @@ import MySQLdb
 from channel import Channel
 from client import Client
 from settings import Settings
-
-# Load the main settings and all the modules
 from utility import debug
 
+
+# Load the main settings and all the modules
 Settings.load_settings({"passwords", "modules", "general"})
 settings = Settings.settings
 Settings.load_modules(settings["active_modules"])
