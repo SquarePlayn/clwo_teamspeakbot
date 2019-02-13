@@ -7,6 +7,7 @@ Verified users get a verified rank, non-verified users do not (actively removes 
 
 import random
 import string
+import ts3.definitions
 
 from client import Client
 from settings import Settings
@@ -78,7 +79,7 @@ def execute(ts, db):
                    + "&" + sv_settings["verification_code_web_field_name"] + "=" + client.verification_code
             message = sv_settings["message"].replace("{link}", link)
             ts.sendtextmessage(
-                targetmode=1,
+                targetmode=ts3.definitions.TextMessageTargetMode.CLIENT,
                 target=client.clid,
                 msg=message
             )
