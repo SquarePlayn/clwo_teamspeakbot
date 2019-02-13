@@ -73,7 +73,7 @@ def execute(ts, db):
             has_verified_rank = False
 
         # If not verified:
-        if not client.is_verified:
+        if not client.is_verified and client.confirm_online(ts):
             # Send verification message
             link = sv_settings["base_link"] + "?" + sv_settings["cldbid_web_field_name"] + "=" + str(client.cldbid) \
                    + "&" + sv_settings["verification_code_web_field_name"] + "=" + client.verification_code

@@ -1,9 +1,12 @@
 import inspect
+import ts3
 
 from settings import Settings
-from utility import set_type
+from utility import set_type, debug
 
 Settings.load_settings({"client_variables"})
+
+TS_INVALID_CLID_ERROR_ID = 512
 
 
 # Stores all information about clients
@@ -31,16 +34,33 @@ class Client:
     # Query and save all default channel variables
     def load_info(self, ts):
         # General client info
-        tsinfo = ts.clientinfo(clid=self.clid)[0]
-        client_variables = Settings.settings["client_variables"]
-        for var_name in client_variables:
-            var_type = client_variables[var_name]
-            setattr(self, var_name, set_type(tsinfo[var_name], var_type))
+        if self.confirm_online(ts):
+            tsinfo = ts.clientinfo(clid=self.clid)[0]
+            client_variables = Settings.settings["client_variables"]
+            for var_name in client_variables:
+                var_type = client_variables[var_name]
+                setattr(self, var_name, set_type(tsinfo[var_name], var_type))
 
         # Group data (only the group ids are stored)
         servergroups_data = ts.servergroupsbyclientid(cldbid=self.cldbid)
         for servergroup in servergroups_data:
             self.servergroups.add(int(servergroup["sgid"]))
+
+    # Confirm / re-check whether this client is still online
+    def confirm_online(self, ts):
+        if self.online:
+            try:
+                ts.clientgetuidfromclid(clid=self.clid)
+            except ts3.query.TS3QueryError as e:
+                if e.resp.error["id"] != str(TS_INVALID_CLID_ERROR_ID):
+                    raise e
+                else:
+                    debug("Checked client with clid "+str(self.clid)+" which is not online.", urgency=1)
+                    self.online = False
+                    clients_copy = Client.clients.copy()
+                    clients_copy.pop(self.cldbid, None)
+                    Client.clients = clients_copy
+        return self.online
 
     # Called initially. Builds the main structure
     @staticmethod

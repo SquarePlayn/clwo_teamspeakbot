@@ -26,22 +26,22 @@ def main():
         try:
             teamspeak_login(ts)
         except Exception as e:
-            debug("TeamSpeak login failed:", repr(e), urgency=20, fatal=True, error=e)
+            debug("TeamSpeak login failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         try:
             db = database_login()
         except Exception as e:
-            debug("Database login failed:", repr(e), urgency=20, fatal=True, error=e)
+            debug("Database login failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         try:
             Client.init(ts)
         except Exception as e:
-            debug("Client initialization failed:", repr(e), urgency=20, fatal=True, error=e)
+            debug("Client initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         try:
             Channel.init(ts)
         except Exception as e:
-            debug("Channel initialization failed:", repr(e), urgency=20, fatal=True, error=e)
+            debug("Channel initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         # Find an appropriate topological module order
         order_modules(loaded_modules)
@@ -59,7 +59,7 @@ def teamspeak_login(ts):
             client_login_password=settings["teamspeak"]["password"]
         )
     except ts3.query.TS3QueryError as err:
-        debug("TeamSpeak login failed:", repr(err.resp.error["msg"]), urgency=20, fatal=True, error=e)
+        debug("TeamSpeak login failed:", repr(err.resp.error["msg"]), urgency=20, fatal=True, error=err)
         exit(1)
     ts.use(sid=settings["teamspeak"]["sid"])
     ts.clientupdate(client_nickname=settings["general"]["bot_name"])
