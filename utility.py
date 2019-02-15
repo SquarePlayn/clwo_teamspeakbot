@@ -14,7 +14,8 @@ def debug(message, message_2="", urgency=0, fatal=False, error=None):
         print(message)
     slack_urgency = Settings.settings["general"]["slack_error_reporting_min_urgency"]
     if 0 <= slack_urgency <= urgency:
-        send_to_slack(message, message_2, inform_dev=True)
+        inform_dev = urgency >= Settings.settings["general"]["slack_error_reporting_mention_dev_min_urgency"]
+        send_to_slack(message, message_2, inform_dev=inform_dev)
 
     if fatal:
         raise error
