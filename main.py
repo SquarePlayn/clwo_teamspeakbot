@@ -1,11 +1,14 @@
 import traceback
 import ts3
+import ts3.definitions
 import MySQLdb
 
 from channel import Channel
 from client import Client
 from settings import Settings
 from utility import debug
+
+USERNAME_TAKEN_ERROR_ID = 513
 
 
 # Load the main settings and all the modules
@@ -43,6 +46,11 @@ def main():
         except Exception as e:
             debug("Channel initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
+        try:
+            teamspeak_set_name(ts)
+        except Exception as e:
+            debug("Bot name setting failed:", traceback.format_exc(), urgency=10, fatal=False, error=e)
+
         # Find an appropriate topological module order
         order_modules(loaded_modules)
 
@@ -62,7 +70,26 @@ def teamspeak_login(ts):
         debug("TeamSpeak login failed:", repr(err.resp.error["msg"]), urgency=20, fatal=True, error=err)
         exit(1)
     ts.use(sid=settings["teamspeak"]["sid"])
-    ts.clientupdate(client_nickname=settings["general"]["bot_name"])
+
+
+# Set the desired TeamSpeak name for the Bot
+# If the name is taken, that person is kicked
+def teamspeak_set_name(ts):
+    name = settings["general"]["bot_name"]
+    try:
+        ts.clientupdate(client_nickname=name)
+    except ts3.query.TS3QueryError as error:
+        if error.resp.error["id"] == str(USERNAME_TAKEN_ERROR_ID):
+            debug("Could not claim name `" + name + "` because someone else took it", urgency=10, fatal=False)
+            for client in Client.clients.values():
+                if client.client_nickname == name:
+                    debug("Clid "+str(client.clid)+", steamid64 "+client.client_description+" was the culprit, kicked!", urgency=10, fatal=False)
+                    msg = "Please change your name"
+                    ts.clientkick(clid=client.clid, reasonid=ts3.definitions.ReasonIdentifier.KICK_SERVER, reasonmsg=msg)
+                    ts.clientupdate(client_nickname=name)
+                    return
+        else:
+            raise error
 
 
 # Log into the database
