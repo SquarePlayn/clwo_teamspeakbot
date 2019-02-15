@@ -100,7 +100,27 @@ def execute_modules_function(function_name, ts, db, reverse=False):
             try:
                 function(ts, db)
             except Exception as e:
-                debug("An exception occurred during execution of `" + function_name + "` on module `" + module_name + "`:", traceback.format_exc(), urgency=20, fatal=True, error=e)
+                unload_module(module_name)
+                debug("An exception occurred during execution of `" + function_name + "` on module `" + module_name + "`:", traceback.format_exc(), urgency=10, fatal=False, error=e)
+
+
+# Recursively unload a module and the modules that depend on it to prevent them from running
+def unload_module(module_name):
+    # Unload the module
+    loaded_modules.pop(module_name)
+    modules_ordered.remove(module_name)
+
+    # Find which modules depend on the module to be removed
+    depending_modules = set()
+    for check_module_name in loaded_modules:
+        check_module = loaded_modules[check_module_name]
+        if hasattr(check_module, "required_modules"):
+            if module_name in check_module.required_modules:
+                depending_modules.add(check_module_name)
+
+    # Unload the depending modules and recurse
+    for depending_module in depending_modules:
+        unload_module(depending_module)
 
 
 # Function called at the end of all executions
