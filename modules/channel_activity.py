@@ -16,9 +16,11 @@ def execute(ts, db):
     points_column = settings["channel_activity"]["db_points_column_name"]
 
     current_time = int(time.time())
-    hour = current_time / 60 / 60
+    hour = int(current_time / 60 / 60)
 
     for client in Client.clients.values():
+        if not client.online:
+            continue
         cid = client.cid
         db.execute("INSERT INTO "+table+"("+cid_column+", "+hour_column+", "+points_column+") VALUES (" +
                    str(cid)+", "+str(hour)+", 1) ON DUPLICATE KEY UPDATE "+points_column+" = "+points_column+" + 1;")
