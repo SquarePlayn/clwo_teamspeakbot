@@ -17,8 +17,19 @@ def init(ts, db):
     for client in Client.clients.values():
         if client.is_verified:
             # Loop over all verified clients
-            blacklist_data = requests.get(bl_settings["api"].replace("{steamid64}", str(client.steamid64))).json()
+
+            # Get the blacklist API data
+            blacklist_api_data = requests.get(bl_settings["api"].replace("{steamid64}", str(client.steamid64)))
+            if blacklist_api_data.status_code < 200 or 299 < blacklist_api_data.status_code:
+                raise Exception("Blacklist API not available")
+            blacklist_data = blacklist_api_data.json()
             client.blacklisted = False
+
+            print(blacklist_api_data.json())
+
+            # Inspect the results to see whether blacklisted
+            if "results" not in blacklist_data.keys():
+                raise Exception("Blacklist API response has no key for 'data' for id "+str(client.steamid64)+". Total data: "+str(blacklist_data))
             if blacklist_data["results"] > 0:
                 for blacklist_id in blacklist_data["data"]:
                     # API sometimes returns dictionary, sometimes list :/
