@@ -1,0 +1,8 @@
+{
+  "client_activity": {
+    "db_table_name": "client_activity",
+    "db_cldbid_column_name": "cldbid",
+    "db_hour_column_name": "hour",
+    "db_points_column_name": "minutepoints"
+  }
+}
