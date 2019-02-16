@@ -1,0 +1,8 @@
+{
+  "channel_activity": {
+    "db_table_name": "channel_activity",
+    "db_cid_column_name": "cid",
+    "db_hour_column_name": "hour",
+    "db_points_column_name": "userminutepoints"
+  }
+}
