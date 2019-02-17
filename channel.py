@@ -14,6 +14,7 @@ class Channel:
     # Called when creating a new instance. Builds all instance's variables
     def __init__(self, cid, ts):
         self.cid = cid
+        self.clients = set()  # Will be filled when creating the clients
         self.load_info(ts)
 
     # Executes a corresponding function on all subscribed modules

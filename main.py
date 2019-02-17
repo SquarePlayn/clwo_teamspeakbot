@@ -37,14 +37,14 @@ def main():
             debug("Database login failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         try:
-            Client.init(ts)
-        except Exception as e:
-            debug("Client initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
-
-        try:
             Channel.init(ts)
         except Exception as e:
             debug("Channel initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
+
+        try:
+            Client.init(ts)
+        except Exception as e:
+            debug("Client initialization failed:", traceback.format_exc(), urgency=20, fatal=True, error=e)
 
         try:
             teamspeak_set_name(ts)

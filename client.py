@@ -1,6 +1,7 @@
 import inspect
 import ts3
 
+from channel import Channel
 from settings import Settings
 from utility import set_type, debug
 
@@ -40,6 +41,7 @@ class Client:
             for var_name in client_variables:
                 var_type = client_variables[var_name]
                 setattr(self, var_name, set_type(tsinfo[var_name], var_type))
+            Channel.channels[self.cid].clients.add(self.cldbid)  # Add itself to clients in channel it is in
 
         # Group data (only the group ids are stored)
         servergroups_data = ts.servergroupsbyclientid(cldbid=self.cldbid)
