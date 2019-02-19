@@ -12,6 +12,20 @@ Settings.load_settings({"channel_sorting", "channel_freeze"})
 settings = Settings.settings
 
 
+def init(ts, db):
+
+    # Calculate the total activity including the successors for all sub-channels if applicable
+    def get_sorting_activity(self, min_hour, db):
+        if not hasattr(self, "total_activity"):
+            self.total_activity = self.get_activity(min_hour, db)
+            if settings["channel_sorting"]["include_subchannel_activity"]:
+                for successor in self.successors:
+                    self.total_activity += successor.get_activity(min_hour, db)
+        return self.total_activity
+
+    setattr(Channel, "get_sorting_activity", get_sorting_activity)
+
+
 def execute(ts, db):
     for section_cid in settings["channel_sorting"]["sections_to_sort"]:
         sort_section(section_cid, ts, db)
@@ -34,15 +48,9 @@ def sort_section(section_cid, ts, db):
     # Find all channels to sort, so exclude any potential frozen channels
     sort_channels = {channel for channel in section.children if channel.cid not in frozen_channels}
 
-    # Calculate the total activity including the successors for all sub-channels if applicable
-    for channel in sort_channels:
-        channel.total_activity = channel.get_activity(min_hour, db)
-        if settings["channel_sorting"]["include_subchannel_activity"]:
-            for successor in channel.successors:
-                channel.total_activity += successor.get_activity(min_hour, db)
-
     # Actually sort them based on the total_activity field
-    sorted_channels = sorted(sort_channels, key=lambda channel: (channel.total_activity, -channel.pos_in_section),
+    sorted_channels = sorted(sort_channels,
+                             key=lambda channel: (channel.get_sorting_activity(min_hour, db), -channel.pos_in_section),
                              reverse=True)
 
     # Find the bottom frozen channel if applicable and mark it as the channel that will be above the highest sorted one
