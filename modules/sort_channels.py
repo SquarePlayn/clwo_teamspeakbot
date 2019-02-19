@@ -36,10 +36,10 @@ def sort_section(section_cid, ts, db):
 
     # Calculate the total activity including the successors for all sub-channels if applicable
     for channel in sort_channels:
-        channel.total_activity = channel.get_activity(min_hour)
+        channel.total_activity = channel.get_activity(min_hour, db)
         if settings["channel_sorting"]["include_subchannel_activity"]:
             for successor in channel.successors:
-                channel.total_activity += successor.get_activity(min_hour)
+                channel.total_activity += successor.get_activity(min_hour, db)
 
     # Actually sort them based on the total_activity field
     sorted_channels = sorted(sort_channels, key=lambda channel: (channel.total_activity, -channel.pos_in_section),

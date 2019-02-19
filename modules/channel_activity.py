@@ -20,7 +20,7 @@ points_column = settings["channel_activity"]["db_points_column_name"]
 def init(ts, db):
 
     # Returns the activity logged in a channel from min_hour (incl) and stores it in a dict activity (key = min_hour)
-    def get_activity(self, min_hour):
+    def get_activity(self, min_hour, db):
         if not hasattr(self, "activity"):
             self.activity = dict()
         if min_hour not in self.activity:
