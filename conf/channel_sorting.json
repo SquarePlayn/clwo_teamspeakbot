@@ -1,0 +1,7 @@
+{
+  "channel_sorting": {
+    "sections_to_sort": [45],
+    "include_subchannel_activity": true,
+    "hours_to_consider": 720
+  }
+}
