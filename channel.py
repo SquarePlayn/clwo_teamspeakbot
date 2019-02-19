@@ -32,6 +32,21 @@ class Channel:
             var_type = channel_variables[var_name]
             setattr(self, var_name, set_type(tsinfo[var_name], var_type))
 
+    # Edit some channel variable(s)
+    def edit_channel(self, changes, ts, db):
+        ts.channeledit(cid=self.cid, **changes)
+        for key in changes:
+            setattr(self, key, changes[key])
+            self.action_executed("edited_var_"+key, ts, db)
+
+    # Move a channel to be in a section underneath a given channel (0 for top channel/level)
+    def move_channel(self, section_id, underneath_id, ts, db):
+        ts.channelmove(cid=self.cid, cpid=section_id, order=underneath_id)
+        self.pid = section_id
+        self.channel_order = underneath_id
+        self.action_executed("edited_var_pid", ts, db)
+        self.action_executed("edited_var_channel_order", ts, db)
+
     # Called initially. Builds the main structure
     @staticmethod
     def init(ts):
