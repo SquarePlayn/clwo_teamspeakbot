@@ -10,6 +10,9 @@ required_modules = {"steam_verification"}
 
 def execute(ts, db):
     for client in Client.clients.values():
+        if not client.online:
+            continue
+
         description = client.client_description
 
         # If verified and steamid64 not first part of description
