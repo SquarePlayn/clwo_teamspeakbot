@@ -1,0 +1,10 @@
+{
+  "channel_archived_section": {
+    "active_section": 45,
+    "archived_section": 281,
+    "hours_to_consider": 720,
+    "include_subchannel_activity": true,
+    "min_activity_for_active": 240,
+    "active_if_people_in_channel": true
+  }
+}
