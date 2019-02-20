@@ -58,6 +58,8 @@ def main():
         execute_modules_function("execute", ts, db)
         execute_modules_function("finalize", ts, db)
 
+        finalize_main(ts, db)
+
 
 # Log into the teamspeak query
 def teamspeak_login(ts):
@@ -151,7 +153,7 @@ def unload_module(module_name):
 
 
 # Function called at the end of all executions
-def finalize(ts, db):
+def finalize_main(ts, db):
     db.close()
 
 
