@@ -123,6 +123,8 @@ def execute_modules_function(function_name, ts, db, reverse=False):
     if reverse:
         order = reversed(order)
     for module_name in order:
+        if module_name not in loaded_modules:
+            continue
         module = loaded_modules[module_name]
         if hasattr(module, function_name):
             function = getattr(module, function_name)
