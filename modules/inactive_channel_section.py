@@ -2,7 +2,6 @@
 Moves channels from between two sections depending on whether they are recently active or not
 If the sort_channels module is active, it takes into account sorting when swapping to different section
 """
-import sys
 import time
 
 from channel import Channel
@@ -63,7 +62,7 @@ def insert_channel_in_section(channel, section, ts, db):
 
     # Insert in section (move to other section)
     underneath_channel_cid = 0
-    if "modules.sort_channels" in sys.modules:
+    if "sort_channels" in Settings.loaded_modules:
         for subchannel in section.children:
             if subchannel.cid in frozen_channels \
                     or subchannel.get_sorting_activity(db) >= channel.get_sorting_activity(db):
