@@ -60,7 +60,7 @@ def sort_section(section_cid, ts, db):
     channel = next(iter(section.children))  # Start at any channel
     while channel.below is not None:        # Go all the way down
         channel = channel.below
-    while channel.above is not None:        # Go up until a frozen channel is found
+    while channel is not None:        # Go up until a frozen channel is found
         if channel.cid in frozen_channels:
             above = channel                 # Mark that this channel should be above all other sorted channels
             break
