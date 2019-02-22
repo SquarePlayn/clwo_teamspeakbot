@@ -122,7 +122,7 @@ def execute_modules_function(function_name, ts, db, reverse=False):
     order = modules_ordered
     if reverse:
         order = reversed(order)
-    for module_name in order:
+    for module_name in order.copy():
         if module_name not in loaded_modules:
             continue
         module = loaded_modules[module_name]
