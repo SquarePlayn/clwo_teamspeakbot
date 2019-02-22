@@ -80,7 +80,7 @@ def set_type(var, var_type, type_2="str"):
     elif var_type == "dict":
         # Dicts must be given as comma separated entries of key=value
         dct = dict()
-        for dict_entry in var.split(','):
+        for dict_entry in var.split(':'):
             if dict_entry != '':
                 dict_split = dict_entry.split('=')
                 dct[dict_split[0]] = set_type(dict_split[1], type_2)
