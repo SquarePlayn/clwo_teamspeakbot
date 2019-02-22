@@ -1,5 +1,6 @@
 import inspect
 import ts3
+import ts3.definitions
 
 from channel import Channel
 from settings import Settings
@@ -64,6 +65,14 @@ class Client:
                     Client.clients = clients_copy
         return self.online
 
+    # Send the client a message
+    def message(self, msg, ts):
+        ts.sendtextmessage(
+            targetmode=ts3.definitions.TextMessageTargetMode.CLIENT,
+            target=self.clid,
+            msg=msg
+        )
+
     # Called initially. Builds the main structure
     @staticmethod
     def init(ts):
@@ -78,7 +87,7 @@ class Client:
     @staticmethod
     def get_client(cldbid, ts):
         if cldbid not in Client.clients:
-            None  # TODO: Create new client from cldbid
+            pass  # TODO: Create new client from cldbid
         return Client.clients[cldbid]
 
     # Allows a module to subscribe to a certain action being executed
