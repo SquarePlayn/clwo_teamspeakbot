@@ -19,7 +19,10 @@ settings = Settings.settings
 
 def init(ts, db):
     sv_settings = settings["steam_verification"]
+    Client.steam_clients = dict()
     clients = Client.clients
+    steam_clients = Client.steam_clients
+
     for client in clients.values():
         query = "SELECT * FROM " + sv_settings["table_name"] + " WHERE cldbid = " + escape_string(
             str(client.cldbid)) + ";"
@@ -40,6 +43,7 @@ def init(ts, db):
             client.is_verified = db_verification_info[sv_settings["steamid64_db_field_name"]] is not None
             if client.is_verified:
                 client.steamid64 = db_verification_info[sv_settings["steamid64_db_field_name"]]
+                steam_clients[client.steamid64] = client
             client.verification_code = db_verification_info[sv_settings["verification_code_db_field_name"]]
 
 
