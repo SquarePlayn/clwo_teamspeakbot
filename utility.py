@@ -12,6 +12,8 @@ Settings.load_settings({"general", "slack"})
 def debug(message, message_2="", urgency=0, fatal=False, error=None):
     if urgency > 0 or Settings.settings["general"]["debug"]:
         print(message)
+        if message_2 != "":
+            print(message_2)
     slack_urgency = Settings.settings["general"]["slack_error_reporting_min_urgency"]
     if 0 <= slack_urgency <= urgency:
         inform_dev = urgency >= Settings.settings["general"]["slack_error_reporting_mention_dev_min_urgency"]
