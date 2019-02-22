@@ -75,7 +75,7 @@ class Channel:
     def create_channel(name, ts, db, options=None):
         if options is None:
             options = dict()
-        cid = ts.channelcreate(channel_name=name, **options)[0]["cid"]
+        cid = int(ts.channelcreate(channel_name=name, **options)[0]["cid"])
         channel = Channel(cid, ts)
         Channel.channels[cid] = channel
         channel.action_executed("edited_var_pid", ts, db)
