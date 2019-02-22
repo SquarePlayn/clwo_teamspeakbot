@@ -4,7 +4,6 @@ Only one channel is allowed per steamid64
 """
 import time
 
-import utility
 from channel import Channel
 from client import Client
 from settings import Settings
@@ -49,7 +48,7 @@ def execute(ts, db):
 
 # Handles all the people that are in the claim-your-channel channel
 def claim_channel_handling(ts, db):
-    room_request_cid = Channel.channels[steamlink_settings["room_request_cid"]]
+    room_request_cid = steamlink_settings["room_request_cid"]
     if room_request_cid not in Channel.channels:
         return
     claim_channel = Channel.channels[room_request_cid]
