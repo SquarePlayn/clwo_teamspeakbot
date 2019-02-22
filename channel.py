@@ -46,6 +46,8 @@ class Channel:
         self.channel_order = underneath_id
         self.action_executed("edited_var_pid", ts, db)
         self.action_executed("edited_var_channel_order", ts, db)
+        for client in self.clients:
+            client.load_info(ts)
 
     # Called initially. Builds the main structure
     @staticmethod
@@ -67,3 +69,16 @@ class Channel:
         if action not in Channel.subscriptions:
             Channel.subscriptions[action] = list()
         Channel.subscriptions[action].append(module)
+
+    # Create a new channel
+    @staticmethod
+    def create_channel(name, ts, db, options=None):
+        if options is None:
+            options = dict()
+        cid = ts.channelcreate(channel_name=name, **options)[0]["cid"]
+        channel = Channel(cid, ts)
+        Channel.channels[cid] = channel
+        channel.action_executed("edited_var_pid", ts, db)
+        channel.action_executed("edited_var_channel_order", ts, db)
+        return channel
+

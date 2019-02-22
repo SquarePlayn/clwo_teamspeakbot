@@ -75,6 +75,18 @@ class Client:
             msg=msg
         )
 
+    # Move the client to a channel
+    def move(self, cid, ts):
+        if not self.confirm_online(ts):
+            return
+        if self.cid == cid:
+            debug("Tried moving client "+str(self.cldbid)+" to channel "+str(cid)+" but already in that channel")
+            return
+        ts.clientmove(cid=cid, clid=self.clid)
+        Channel.channels[self.cid].clients.remove(self.cldbid)
+        self.load_info(ts)
+        Channel.channels[cid].clients.add(self.cldbid)
+
     # Called initially. Builds the main structure
     @staticmethod
     def init(ts):
