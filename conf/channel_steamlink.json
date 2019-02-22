@@ -1,0 +1,17 @@
+{
+  "channel_steamlink": {
+    "db_table": "user_channels",
+    "db_cid_column_name": "cid",
+    "db_steam64_column_name": "steamid64",
+    "db_request_date_column_name": "requestdate",
+    "room_request_cid": 284,
+    "nonverified_message": "You must verify yourself before you can claim a channel",
+    "channel_previously_removed_message": "You already had a channel, which got removed. Please contact an admin.",
+    "put_new_rooms_in_section": 45,
+    "channel_settings": {
+      "channel_flag_permanent": 1,
+      "channel_codec": 4,
+      "channel_codec_quality": 10
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "channel_ranks": {
+    "channel_admin_rank_id": 5,
+    "channel_voice_rank_id": 6,
+    "channel_operator_rank_id": 7,
+    "channel_guest_rank_id": 8
+  }
+}
