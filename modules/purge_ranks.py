@@ -44,5 +44,5 @@ def on_client_do_purge_ranks(client, ts, db):
             or (blacklist_enabled and cgid in channelgroups_blacklist):
         # Remove channel group
         ts.setclientchannelgroup(cgid=default_channel_rank, cldbid=client.cldbid, cid=client.cid)
-        client.cgid = default_channel_rank
+        client.client_channel_group_id = default_channel_rank
         client.action_executed("channel_rank_changed", ts, db)
