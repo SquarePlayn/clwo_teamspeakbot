@@ -53,7 +53,7 @@ class Channel:
         self.action_executed("edited_var_pid", ts, db)
         self.action_executed("edited_var_channel_order", ts, db)
         for client in self.clients:
-            Client.clients[client].client.load_info(ts)
+            Client.clients[client].load_info(ts)
 
     # Called initially. Builds the main structure
     @staticmethod
