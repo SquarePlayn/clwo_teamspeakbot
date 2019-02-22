@@ -1,5 +1,6 @@
 import inspect
 
+from client import Client
 from settings import Settings
 from utility import set_type, debug
 
@@ -53,7 +54,7 @@ class Channel:
         self.action_executed("edited_var_pid", ts, db)
         self.action_executed("edited_var_channel_order", ts, db)
         for client in self.clients:
-            client.load_info(ts)
+            Client.clients[client].client.load_info(ts)
 
     # Called initially. Builds the main structure
     @staticmethod
