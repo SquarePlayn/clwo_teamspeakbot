@@ -1,7 +1,7 @@
 import inspect
 
 from settings import Settings
-from utility import set_type
+from utility import set_type, debug
 
 Settings.load_settings({"channel_variables"})
 
@@ -34,6 +34,12 @@ class Channel:
 
     # Edit some channel variable(s)
     def edit_channel(self, changes, ts, db):
+        try:
+            ts.channeledit(cid=self.cid, **changes)
+        except Exception as e:
+            debug("Error editing channel " + str(self.cid) + " to " + str(changes), urgency=10)
+            raise e
+
         ts.channeledit(cid=self.cid, **changes)
         for key in changes:
             setattr(self, key, changes[key])
