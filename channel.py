@@ -1,6 +1,5 @@
 import inspect
 
-from client import Client
 from settings import Settings
 from utility import set_type, debug
 
@@ -89,3 +88,5 @@ class Channel:
         channel.action_executed("edited_var_channel_order", ts, db)
         return channel
 
+# Need import afterwards to avoid cycle
+from client import Client
