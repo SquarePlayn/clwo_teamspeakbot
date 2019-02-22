@@ -43,7 +43,10 @@ def init(ts, db):
             client.is_verified = db_verification_info[sv_settings["steamid64_db_field_name"]] is not None
             if client.is_verified:
                 client.steamid64 = db_verification_info[sv_settings["steamid64_db_field_name"]]
-                steam_clients[client.steamid64] = client
+                if client.steamid64 not in steam_clients:
+                    steam_clients[client.steamid64] = set()
+                steam_clients[client.steamid64].add(client)
+
             client.verification_code = db_verification_info[sv_settings["verification_code_db_field_name"]]
 
 
