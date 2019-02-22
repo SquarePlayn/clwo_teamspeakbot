@@ -67,6 +67,8 @@ class Client:
 
     # Send the client a message
     def message(self, msg, ts):
+        if not self.confirm_online(ts):
+            return
         ts.sendtextmessage(
             targetmode=ts3.definitions.TextMessageTargetMode.CLIENT,
             target=self.clid,
