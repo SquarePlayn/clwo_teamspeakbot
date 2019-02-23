@@ -96,9 +96,10 @@ def claim_channel_handling(ts, db):
                         "VALUES ("+str(channel.cid)+", "+str(client.steamid64)+", "+str(current_time)+");"
                 db.execute(query)
 
-                # Assign user their channel in internal model
+                # Assign user their channel in internal model and vice versa
                 client.user_channel = channel
                 Channel.steam_channels[client.steamid64] = channel
+                channel.owner_steamid64 = client.steamid64
 
         # If they have a channel, put them in it
         if hasattr(client, "user_channel"):
