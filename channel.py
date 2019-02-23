@@ -66,6 +66,11 @@ class Channel:
 
         # Execute the move
         ts.channelmove(cid=self.cid, cpid=section_id, order=underneath_id)
+
+        # Update internal values to match again
+        below_finder = {channel for channel in Channel.channels.values() if channel.channel_order == self.cid}
+        for below in below_finder:
+            below.channel_order = self.channel_order
         self.pid = section_id
         self.channel_order = underneath_id
         self.action_executed("edited_var_pid", ts, db)
