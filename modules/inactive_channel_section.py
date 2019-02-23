@@ -14,6 +14,8 @@ settings = Settings.settings
 
 def init(ts, db):
 
+    Channel.subscribe("clients_changed")
+
     # Return whether a channel is deemed active or not (= achievable)
     def is_active(self, db):
         current_hour = int(time.time() / 60 / 60)
@@ -35,19 +37,34 @@ def init(ts, db):
     setattr(Channel, "is_active", is_active)
 
 
+def on_channel_clients_changed(channel, ts, db):
+    check_channel(channel, ts, db)
+
+
 def execute(ts, db):
     channels = Channel.channels
+    active_section = channels[settings["channel_archived_section"]["active_section"]]
+    archived_section = channels[settings["channel_archived_section"]["archived_section"]]
 
+    for channel in active_section.children:
+        check_channel(channel, ts, db)
+
+    for channel in archived_section.children:
+        check_channel(channel, ts, db)
+
+
+def check_channel(channel, ts, db):
+    channels = Channel.channels
     active_section = channels[settings["channel_archived_section"]["active_section"]]
     archived_section = channels[settings["channel_archived_section"]["archived_section"]]
 
     # Move inactive channels in active section to archived section
-    for channel in active_section.children:
+    if channel.parent == active_section:
         if not channel.is_active(db):
             insert_channel_in_section(channel, archived_section, ts, db)
 
     # Move active channels in archived section to active section
-    for channel in archived_section.children:
+    if channel.parent == archived_section:
         if channel.is_active(db):
             insert_channel_in_section(channel, active_section, ts, db)
 

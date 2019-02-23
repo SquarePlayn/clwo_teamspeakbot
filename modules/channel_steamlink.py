@@ -104,7 +104,7 @@ def claim_channel_handling(ts, db):
         if hasattr(client, "user_channel"):
             # Move client to their channel
             channel = client.user_channel
-            client.move(channel.cid, ts)
+            client.move(channel.cid, ts, db)
 
 
 # Gives channel admin to the people that are in their own channel (by steamid64)

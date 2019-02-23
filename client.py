@@ -76,7 +76,7 @@ class Client:
         )
 
     # Move the client to a channel
-    def move(self, cid, ts):
+    def move(self, cid, ts, db):
         if not self.confirm_online(ts):
             return
         if self.cid == cid:
@@ -84,8 +84,10 @@ class Client:
             return
         ts.clientmove(cid=cid, clid=self.clid)
         Channel.channels[self.cid].clients.remove(self.cldbid)
+        Channel.channels[self.cid].action_executed("clients_changed", ts, db)
         self.load_info(ts)
         Channel.channels[cid].clients.add(self.cldbid)
+        Channel.channels[cid].action_executed("clients_changed", ts, db)
 
     # Called initially. Builds the main structure
     @staticmethod
