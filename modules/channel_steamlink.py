@@ -80,7 +80,7 @@ def claim_channel_handling(ts, db):
 
                 # Make sure the name is not yet taken: Append random letters if it is
                 append_number = 2
-                used_names = {client.client_nickname for client in Client.clients.values()}
+                used_names = {channel.channel_name for channel in section.children}
                 while name in used_names:
                     name = base_name + " " + str(append_number)
                     append_number += 1
