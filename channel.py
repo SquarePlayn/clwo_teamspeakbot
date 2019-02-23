@@ -71,6 +71,7 @@ class Channel:
         below_finder = {channel for channel in Channel.channels.values() if channel.channel_order == self.cid}
         for below in below_finder:
             below.channel_order = self.channel_order
+            below.action_executed("edited_var_channel_order", ts, db)
         self.pid = section_id
         self.channel_order = underneath_id
         self.action_executed("edited_var_pid", ts, db)
