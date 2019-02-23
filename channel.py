@@ -40,13 +40,31 @@ class Channel:
             debug("Error editing channel " + str(self.cid) + " to " + str(changes), urgency=10)
             raise e
 
-        ts.channeledit(cid=self.cid, **changes)
         for key in changes:
             setattr(self, key, changes[key])
             self.action_executed("edited_var_"+key, ts, db)
 
     # Move a channel to be in a section underneath a given channel (0 for top channel/level)
     def move_channel(self, section_id, underneath_id, ts, db):
+        if self.pid == section_id:
+            debug("Attempting to move channel "+str(self.cid)+" to section "+str(section_id) +
+                  " under "+str(underneath_id)+" while already in that section.", urgency=10)
+            return
+
+        # Check if the name is available
+        name = self.channel_name
+        used_names_dest = {channel.channel_name for channel in Channel.channels.values() if channel.pid == section_id}
+        if name in used_names_dest:
+            used_names = {channel.channel_name for channel in Channel.channels.values()
+                          if channel.pid in {section_id, self.pid}}
+            append_number = 2
+            base_name = name
+            while name in used_names:
+                name = base_name + " " + str(append_number)
+                append_number += 1
+            self.edit_channel({"channel_name": name}, ts, db)
+
+        # Execute the move
         ts.channelmove(cid=self.cid, cpid=section_id, order=underneath_id)
         self.pid = section_id
         self.channel_order = underneath_id
