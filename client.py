@@ -24,7 +24,8 @@ class Client:
         self.online = online
         if online:
             self.clid = clid
-            self.load_info(ts)
+            if self.confirm_online(ts):
+                self.load_info(ts)
 
     # Executes a corresponding function on all subscribed modules
     def action_executed(self, action, ts, db):
