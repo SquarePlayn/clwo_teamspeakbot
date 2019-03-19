@@ -9,6 +9,7 @@ from client import Client
 from settings import Settings
 
 Settings.load_settings({"channel_activity"})
+required_modules = {"bot_detection"}
 settings = Settings.settings
 
 table = settings["channel_activity"]["db_table_name"]
@@ -47,7 +48,7 @@ def execute(ts, db):
     hour = int(current_time / 60 / 60)
 
     for client in Client.clients.values():
-        if not client.online:
+        if not client.online or client.is_bot:
             continue
         cid = client.cid
         db.execute("INSERT INTO "+table+"("+cid_column+", "+hour_column+", "+points_column+") VALUES (" +
