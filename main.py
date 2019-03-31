@@ -73,11 +73,15 @@ def teamspeak_login(ts):
         exit(1)
     ts.use(sid=settings["teamspeak"]["sid"])
 
-
 # Set the desired TeamSpeak name for the Bot
 # If the name is taken, that person is kicked
 def teamspeak_set_name(ts):
     name = settings["general"]["bot_name"]
+
+    # If the bot already has this name, don't do anything
+    if ts.whoami()[0]["client_nickname"] == name:
+        return
+
     try:
         ts.clientupdate(client_nickname=name)
     except ts3.query.TS3QueryError as error:
@@ -85,7 +89,7 @@ def teamspeak_set_name(ts):
             debug("Could not claim name `" + name + "` because someone else took it", urgency=10, fatal=False)
             for client in Client.clients.values():
                 if client.client_nickname == name:
-                    debug("Clid "+str(client.clid)+", steamid64 "+client.client_description+" was the culprit, kicked!", urgency=10, fatal=False)
+                    debug("Clid "+str(client.clid)+", Cldbid "+str(client.cldbid)+", steamid64 "+client.client_description+" was the culprit, kicked!", urgency=10, fatal=False)
                     msg = "Please change your name"
                     ts.clientkick(clid=client.clid, reasonid=ts3.definitions.ReasonIdentifier.KICK_SERVER, reasonmsg=msg)
                     ts.clientupdate(client_nickname=name)
@@ -157,6 +161,7 @@ def unload_module(module_name):
 # Function called at the end of all executions
 def finalize_main(ts, db):
     db.close()
+    ts.logout()
 
 
 main()
