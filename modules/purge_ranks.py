@@ -15,9 +15,14 @@ def init(ts, db):
     blacklist_enabled = Settings.settings["purge_ranks"]["blacklist_enabled"]
     if whitelist_enabled and blacklist_enabled:
         # Both whitelist and blacklist enabled. Makes no sense
-        debug("Both whitelist and blacklist are enabled for purging ranks. Removing as many ranks as I can.", urgency=10)
+        debug("Both whitelist and blacklist are enabled for purging ranks. Removing as many ranks as I can.",
+              urgency=10)
     if whitelist_enabled or blacklist_enabled:
         Client.subscribe("do_purge_ranks")
+
+    # Initially mark all clients as not rank-purged
+    for client in Client.clients.values():
+        client.purge_ranks = False
 
 
 # Remove the client from channel- and server-groups according to the whitelist & blacklist settings
@@ -29,6 +34,9 @@ def on_client_do_purge_ranks(client, ts, db):
     servergroups_blacklist = Settings.settings["purge_ranks"]["servergroups_blacklist"]
     channelgroups_whitelist = Settings.settings["purge_ranks"]["channelgroups_whitelist"]
     channelgroups_blacklist = Settings.settings["purge_ranks"]["channelgroups_blacklist"]
+
+    # Mark client as rank-purged
+    client.purge_ranks = True
 
     for servergroup in client.servergroups.copy():
         if (whitelist_enabled and servergroup not in servergroups_whitelist) \

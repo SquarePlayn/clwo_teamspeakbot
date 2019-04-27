@@ -8,7 +8,7 @@ from channel import Channel
 from client import Client
 from settings import Settings
 
-required_modules = {"steam_verification", "channel_order_information"}
+required_modules = {"steam_verification", "channel_order_information", "purge_ranks"}
 Settings.load_settings({"channel_steamlink", "channel_ranks"})
 steamlink_settings = Settings.settings["channel_steamlink"]
 
@@ -116,6 +116,7 @@ def give_channel_admins(ts, db):
             if hasattr(client, "user_channel"):     # Has a channel of their own
                 if client.user_channel.cid == client.cid:   # In their own channel
                     if channel_admin_rank_id != client.client_channel_group_id:     # Not channel admin
-                        ts.setclientchannelgroup(cgid=channel_admin_rank_id, cldbid=client.cldbid, cid=client.user_channel.cid)
+                        if not client.rank_purged:
+                            ts.setclientchannelgroup(cgid=channel_admin_rank_id, cldbid=client.cldbid, cid=client.user_channel.cid)
 
 
