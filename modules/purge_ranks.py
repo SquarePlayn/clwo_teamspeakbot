@@ -25,8 +25,20 @@ def init(ts, db):
         client.purge_ranks = False
 
 
-# Remove the client from channel- and server-groups according to the whitelist & blacklist settings
+# Purge all clients that were marked to be purged
+def execute(ts, db):
+    for client in Client.clients.values():
+        if client.purge_ranks:
+            purge_rank_of_client(client, ts, db)
+
+
+# Mark client as to be purged
 def on_client_do_purge_ranks(client, ts, db):
+    client.purge_ranks = True
+
+
+# Remove the client from channel- and server-groups according to the whitelist & blacklist settings
+def purge_rank_of_client(client, ts, db):
     default_channel_rank = Settings.settings["purge_ranks"]["default_channel_rank"]
     whitelist_enabled = Settings.settings["purge_ranks"]["whitelist_enabled"]
     blacklist_enabled = Settings.settings["purge_ranks"]["blacklist_enabled"]

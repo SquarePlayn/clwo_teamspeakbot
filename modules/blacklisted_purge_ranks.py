@@ -7,7 +7,7 @@ required_modules = {"blacklist", "purge_ranks"}
 
 
 # Give or remove the blacklist server rank accordingly
-def execute(ts, db):
+def init(ts, db):
     for client in Client.clients.values():
         if client.is_verified:
             if client.blacklisted:
