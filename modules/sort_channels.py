@@ -21,6 +21,8 @@ def init(ts, db):
             hour = round(current_time / 60 / 60)
             hours_to_consider = settings["channel_sorting"]["hours_to_consider"]
 
+            activity = 0
+
             # Consider different time sections, take the section with highest activity per time-unit
             for fraction in settings["channel_sorting"]["fractions_to_consider"]:
                 min_hour = hour - int(fraction * hours_to_consider)
@@ -33,7 +35,9 @@ def init(ts, db):
 
                 check_activity /= fraction
 
-                self.sorting_activity = min(self.sorting_activity, check_activity)
+                activity = max(activity, check_activity)
+
+            self.sorting_activity = activity
 
         return self.sorting_activity
 
