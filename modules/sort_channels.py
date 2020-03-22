@@ -18,14 +18,22 @@ def init(ts, db):
     def get_sorting_activity(self, db):
         if not hasattr(self, "sorting_activity"):
             current_time = int(time.time())
-            hour = int(current_time / 60 / 60)
-            min_hour = hour - settings["channel_sorting"]["hours_to_consider"]
+            hour = round(current_time / 60 / 60)
+            hours_to_consider = settings["channel_sorting"]["hours_to_consider"]
 
-            self.sorting_activity = self.get_activity(min_hour, db)
+            # Consider different time sections, take the section with highest activity per time-unit
+            for fraction in settings["channel_sorting"]["fractions_to_consider"]:
+                min_hour = hour - int(fraction * hours_to_consider)
 
-            if settings["channel_sorting"]["include_subchannel_activity"]:
-                for successor in self.successors:
-                    self.sorting_activity += successor.get_activity(min_hour, db)
+                check_activity = self.get_activity(min_hour, db)
+
+                if settings["channel_sorting"]["include_subchannel_activity"]:
+                    for successor in self.successors:
+                        check_activity += successor.get_activity(min_hour, db)
+
+                check_activity /= fraction
+
+                self.sorting_activity = min(self.sorting_activity, check_activity)
 
         return self.sorting_activity
 
