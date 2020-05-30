@@ -2,7 +2,8 @@
   "gameserver_staff": {
     "api": "https://clwo.eu/jailbreak/api/v2/clwo_staff.php?Minified=true&MaxPerPage=250",
     "group_ids": {
-      "1": 13
+      "1": 28,
+      "101": 29
     }
   }
 }
