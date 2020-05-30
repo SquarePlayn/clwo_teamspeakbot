@@ -42,6 +42,7 @@ def init(ts, db):
             client.is_verified = db_verification_info[sv_settings["steamid64_db_field_name"]] is not None
             if client.is_verified:
                 client.steamid64 = db_verification_info[sv_settings["steamid64_db_field_name"]]
+                client.accountID = convert_steam_id_64_to_account_id(client.steamid64)
                 if client.steamid64 not in steam_clients:
                     steam_clients[client.steamid64] = set()
                 steam_clients[client.steamid64].add(client)
@@ -93,3 +94,8 @@ def generate_code():
     for i in range(settings["steam_verification"]["code_length"]):
         code += random.choice(string.ascii_letters)
     return code
+
+
+# Converts steamid64 to AccountID ([U:1:THIS])
+def convert_steam_id_64_to_account_id(steamid64):
+    return int(steamid64) - 76561197960265728
