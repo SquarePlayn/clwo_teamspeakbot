@@ -43,7 +43,7 @@ def execute(ts, db):
     for client in Client.clients.values():
         for gameserver_staff_server_id in gameserver_staff_group_ids.keys():
             teamspeak_group_id = gameserver_staff_group_ids[gameserver_staff_server_id]
-            if gameserver_staff_server_id in client.gameserver_staff_ranks.keys():
+            if int(gameserver_staff_server_id) in client.gameserver_staff_ranks.keys():
                 # This person is staff on this server, ensure he has the TeamSpeak rank
                 if teamspeak_group_id not in client.servergroups:
                     ts.servergroupaddclient(sgid=teamspeak_group_id, cldbid=client.cldbid)
