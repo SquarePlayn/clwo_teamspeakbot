@@ -27,7 +27,7 @@ def init(ts, db):
 
             # Inspect the results to see whether blacklisted
             if "results" not in blacklist_data.keys():
-                raise Exception("Blacklist API response has no key for 'data' for id "+str(client.steamid64)+". Total data: "+str(blacklist_data))
+                raise Exception("Blacklist API response has no key for 'results' for id "+str(client.steamid64)+". Total data: "+str(blacklist_data))
             if blacklist_data["results"] > 0:
                 for blacklist_id in blacklist_data["data"]:
                     # API sometimes returns dictionary, sometimes list :/
