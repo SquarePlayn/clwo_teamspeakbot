@@ -4,6 +4,7 @@
     "group_ids": {
       "1": 28,
       "101": 29
-    }
+    },
+    "ranks_staff_cant_have": [10]
   }
 }

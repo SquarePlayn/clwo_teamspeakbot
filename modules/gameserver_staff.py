@@ -41,10 +41,13 @@ def init(ts, db):
 def execute(ts, db):
     gameserver_staff_group_ids = Settings.settings["gameserver_staff"]["group_ids"]
     for client in Client.clients.values():
+        client.has_ts_ingame_staff_rank = False
+        # Update their staff ranks
         for gameserver_staff_server_id in gameserver_staff_group_ids.keys():
             teamspeak_group_id = gameserver_staff_group_ids[gameserver_staff_server_id]
             if int(gameserver_staff_server_id) in client.gameserver_staff_ranks.keys():
                 # This person is staff on this server, ensure he has the TeamSpeak rank
+                client.has_ts_ingame_staff_rank = True
                 if teamspeak_group_id not in client.servergroups:
                     ts.servergroupaddclient(sgid=teamspeak_group_id, cldbid=client.cldbid)
                     client.servergroups.add(teamspeak_group_id)
@@ -57,3 +60,10 @@ def execute(ts, db):
                     client.servergroups.remove(teamspeak_group_id)
                     client.action_executed("staff_rank_changed", ts, db)
                     client.action_executed("staff_rank_removed", ts, db)
+
+        # If they have a TS staff rank, ensure they do not have ranks that staff can't have anymore
+        if client.has_ts_ingame_staff_rank:
+            for teamspeak_group_id in Settings.settings["gameserver_staff"]["ranks_staff_cant_have"]:
+                if teamspeak_group_id in client.servergroups:
+                    ts.servergroupdelclient(sgid=teamspeak_group_id, cldbid=client.cldbid)
+                    client.servergroups.remove(teamspeak_group_id)
