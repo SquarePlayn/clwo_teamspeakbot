@@ -7,7 +7,7 @@ from client import Client
 from settings import Settings
 
 required_settings = {"gameserver_staff"}
-required_modules = {"steam_verification"}
+required_modules = {"steam_verification", "bot_detection"}
 
 
 # Check and store for all clients what gameserver staff ranks they have
@@ -29,7 +29,7 @@ def init(ts, db):
 
     for client in Client.clients.values():
         client.gameserver_staff_ranks = dict()
-        if client.is_verified:
+        if client.is_verified and not client.is_bot:
             # Loop over all verified clients
 
             for gameserver_staff_entry in gameserver_staff_data["data"]:
